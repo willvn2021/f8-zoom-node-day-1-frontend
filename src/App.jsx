@@ -5,7 +5,11 @@ import { Checkbox } from "./components/ui/checkbox";
 import { Card, CardHeader, CardTitle, CardContent } from "./components/ui/card";
 import { Trash2 } from "lucide-react";
 
-const API_BASE_URL = "http://localhost:3000/api";
+const API_BASE_URL =
+    import.meta.env.VITE_API_BASE_URL ||
+    (import.meta.env.PROD
+        ? "https://f8-zoom-node-day-1-backend.onrender.com/api"
+        : "http://localhost:3000/api");
 
 function App() {
     const [tasks, setTasks] = useState([]);
@@ -84,9 +88,9 @@ function App() {
 
             // Cập nhật task với data hợp lệ
             if (result.data && result.data.id) {
-                setTasks(tasks.map((task) =>
-                    task.id === id ? result.data : task
-                ));
+                setTasks(
+                    tasks.map((task) => (task.id === id ? result.data : task))
+                );
                 setError(null); // Clear error nếu thành công
             } else {
                 throw new Error("Invalid response from server");
@@ -116,82 +120,89 @@ function App() {
         <div className="min-h-screen w-full flex items-center justify-center p-4">
             <div className="w-full max-w-2xl">
                 <Card>
-                <CardHeader>
-                    <CardTitle>Todo List</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    {/* Add Task Form */}
-                    <form onSubmit={handleAddTask} className="flex gap-2 mb-6">
-                        <Input
-                            type="text"
-                            placeholder="Enter new task..."
-                            value={newTaskTitle}
-                            onChange={(e) => setNewTaskTitle(e.target.value)}
-                            className="flex-1"
-                        />
-                        <Button type="submit">Add Task</Button>
-                    </form>
+                    <CardHeader>
+                        <CardTitle>Todo List</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        {/* Add Task Form */}
+                        <form
+                            onSubmit={handleAddTask}
+                            className="flex gap-2 mb-6"
+                        >
+                            <Input
+                                type="text"
+                                placeholder="Enter new task..."
+                                value={newTaskTitle}
+                                onChange={(e) =>
+                                    setNewTaskTitle(e.target.value)
+                                }
+                                className="flex-1"
+                            />
+                            <Button type="submit">Add Task</Button>
+                        </form>
 
-                    {/* Loading State */}
-                    {loading && (
-                        <p className="text-center text-muted-foreground">
-                            Loading tasks...
-                        </p>
-                    )}
+                        {/* Loading State */}
+                        {loading && (
+                            <p className="text-center text-muted-foreground">
+                                Loading tasks...
+                            </p>
+                        )}
 
-                    {/* Error State */}
-                    {error && (
-                        <p className="text-center text-destructive mb-4">
-                            Error: {error}
-                        </p>
-                    )}
+                        {/* Error State */}
+                        {error && (
+                            <p className="text-center text-destructive mb-4">
+                                Error: {error}
+                            </p>
+                        )}
 
-                    {/* Tasks List */}
-                    {!loading && tasks.length === 0 && (
-                        <p className="text-center text-muted-foreground">
-                            No tasks yet. Add one above!
-                        </p>
-                    )}
+                        {/* Tasks List */}
+                        {!loading && tasks.length === 0 && (
+                            <p className="text-center text-muted-foreground">
+                                No tasks yet. Add one above!
+                            </p>
+                        )}
 
-                    {!loading && tasks.length > 0 && (
-                        <div className="space-y-2">
-                            {tasks.map((task) => (
-                                <div
-                                    key={task.id}
-                                    className="flex items-center gap-3 p-3 border-b last:border-b-0"
-                                >
-                                    <Checkbox
-                                        checked={task.isComplete || false}
-                                        onCheckedChange={() =>
-                                            handleToggleTask(
-                                                task.id,
-                                                task.isComplete,
-                                                task.title
-                                            )
-                                        }
-                                    />
-                                    <span
-                                        className={`flex-1 ${
-                                            task.isComplete
-                                                ? "line-through text-muted-foreground"
-                                                : ""
-                                        }`}
+                        {!loading && tasks.length > 0 && (
+                            <div className="space-y-2">
+                                {tasks.map((task) => (
+                                    <div
+                                        key={task.id}
+                                        className="flex items-center gap-3 p-3 border-b last:border-b-0"
                                     >
-                                        {task.title}
-                                    </span>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={() => handleDeleteTask(task.id)}
-                                    >
-                                        <Trash2 className="h-4 w-4" />
-                                    </Button>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
+                                        <Checkbox
+                                            checked={task.isComplete || false}
+                                            onCheckedChange={() =>
+                                                handleToggleTask(
+                                                    task.id,
+                                                    task.isComplete,
+                                                    task.title
+                                                )
+                                            }
+                                        />
+                                        <span
+                                            className={`flex-1 ${
+                                                task.isComplete
+                                                    ? "line-through text-muted-foreground"
+                                                    : ""
+                                            }`}
+                                        >
+                                            {task.title}
+                                        </span>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            onClick={() =>
+                                                handleDeleteTask(task.id)
+                                            }
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
             </div>
         </div>
     );
