@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist -r https://github.com/willvn2021/f8-zoom-node-day-1-frontend.git"
   },
   "dependencies": {
     "@radix-ui/react-checkbox": "^1.3.3",
